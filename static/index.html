@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EduAdapt AI — Transform any lesson into accessible, adaptive learning materials powered by Gemini AI. Supports dyslexia, visual, hearing, and slow learner modes.">
+    <title>EduAdapt AI — Inclusive Learning Platform</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- ─── Sidebar ─────────────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">🎓</div>
+            <h2 class="sidebar-title">EduAdapt AI</h2>
+            <p class="sidebar-subtitle">Inclusive Learning Platform</p>
+        </div>
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <h3 class="sidebar-section-title">📥 Input Method</h3>
+            <div class="input-mode-selector" id="inputModeSelector">
+                <button class="mode-radio active" data-mode="pdf" id="modePdf">
+                    <span class="mode-radio-icon">📄</span> Upload PDF
+                </button>
+                <button class="mode-radio" data-mode="text" id="modeText">
+                    <span class="mode-radio-icon">✏️</span> Paste Text
+                </button>
+                <button class="mode-radio" data-mode="video" id="modeVideo">
+                    <span class="mode-radio-icon">🎥</span> Video
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <h3 class="sidebar-section-title">📊 Your Progress</h3>
+            <div id="progressSection">
+                <p class="sidebar-caption">No quiz results yet. Take a quiz to track progress!</p>
+            </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-footer">
+            Built with ❤️ for inclusive education<br>
+            Powered by Gemini AI
+        </div>
+    </aside>
+
+    <!-- ─── Mobile Sidebar Toggle ───────────────────────────── -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <span></span><span></span><span></span>
+    </button>
+
+    <!-- ─── Main Content ────────────────────────────────────── -->
+    <main class="main-content" id="mainContent">
+        <!-- Hero -->
+        <header class="hero-header" id="heroHeader">
+            <h1>🎓 EduAdapt AI</h1>
+            <p>Teach once. Adapt for every learner.</p>
+        </header>
+
+        <!-- Input Section -->
+        <section class="content-section" id="inputSection">
+            <h2 class="section-header">📥 Lesson Input</h2>
+
+            <!-- PDF Upload -->
+            <div class="input-panel" id="panelPdf">
+                <div class="upload-zone" id="uploadZonePdf">
+                    <div class="upload-icon">📄</div>
+                    <p class="upload-title">Drag & drop your PDF or TXT file here</p>
+                    <p class="upload-subtitle">or click to browse • Max 20 MB</p>
+                    <input type="file" id="fileInputPdf" accept=".pdf,.txt" hidden>
+                </div>
+                <div class="file-preview" id="filePreviewPdf" style="display:none;">
+                    <div class="file-preview-info">
+                        <span class="file-preview-icon">📎</span>
+                        <span class="file-preview-name" id="fileNamePdf"></span>
+                        <span class="file-preview-size" id="fileSizePdf"></span>
+                    </div>
+                    <button class="file-remove-btn" id="fileRemovePdf" title="Remove file">✕</button>
+                </div>
+            </div>
+
+            <!-- Text Input -->
+            <div class="input-panel" id="panelText" style="display:none;">
+                <textarea class="text-input" id="textInput"
+                    placeholder="Paste or type your lesson content here...
+
+Minimum 20 characters required."
+                    rows="10"></textarea>
+                <div class="text-char-count" id="charCount">0 characters</div>
+            </div>
+
+            <!-- Video Upload -->
+            <div class="input-panel" id="panelVideo" style="display:none;">
+                <div class="upload-zone" id="uploadZoneVideo">
+                    <div class="upload-icon">🎥</div>
+                    <p class="upload-title">Drag & drop your video file here</p>
+                    <p class="upload-subtitle">MP4 or MOV • Max 20 MB</p>
+                    <input type="file" id="fileInputVideo" accept=".mp4,.mov" hidden>
+                </div>
+                <div class="file-preview" id="filePreviewVideo" style="display:none;">
+                    <div class="file-preview-info">
+                        <span class="file-preview-icon">🎬</span>
+                        <span class="file-preview-name" id="fileNameVideo"></span>
+                        <span class="file-preview-size" id="fileSizeVideo"></span>
+                    </div>
+                    <button class="file-remove-btn" id="fileRemoveVideo" title="Remove file">✕</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Processing Section -->
+        <section class="content-section" id="processingSection">
+            <h2 class="section-header">🤖 AI Processing</h2>
+            <div class="process-btn-container">
+                <button class="btn-primary btn-process" id="processBtn" disabled>
+                    <span class="btn-icon">🚀</span>
+                    <span class="btn-text">Process with Gemini AI</span>
+                </button>
+            </div>
+            <!-- Processing Status -->
+            <div class="processing-status" id="processingStatus" style="display:none;">
+                <div class="status-spinner"></div>
+                <div class="status-steps" id="statusSteps"></div>
+            </div>
+            <!-- Error Display -->
+            <div class="alert alert-error" id="processError" style="display:none;"></div>
+        </section>
+
+        <!-- Landing / Get Started (shown before processing) -->
+        <section class="content-section" id="landingSection">
+            <div class="landing-card">
+                <div class="landing-icon">📚</div>
+                <h3>Get Started</h3>
+                <p>Choose <strong>Upload PDF</strong>, <strong>Paste Text</strong>, or <strong>Video</strong> in the sidebar, then click <strong>Process with Gemini AI</strong> to generate accessible learning materials.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔤</div>
+                    <div class="feature-title">Dyslexia Support</div>
+                    <div class="feature-desc">Simplified text with clear formatting</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👁️</div>
+                    <div class="feature-title">Visual Support</div>
+                    <div class="feature-desc">Audio scripts for screen readers</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👂</div>
+                    <div class="feature-title">Hearing Support</div>
+                    <div class="feature-desc">Rich text and visual summaries</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🐢</div>
+                    <div class="feature-title">Slow Learner</div>
+                    <div class="feature-desc">Step-by-step chunked content</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── Results (hidden until processed) ──────────── -->
+        <div id="resultsContainer" style="display:none;">
+
+            <!-- Lesson Output -->
+            <section class="content-section" id="lessonSection">
+                <h2 class="section-header">📚 AI-Generated Lesson Content</h2>
+                <div class="lesson-title-card" id="lessonTitleCard"></div>
+
+                <!-- Tabs -->
+                <div class="tabs" id="lessonTabs">
+                    <button class="tab active" data-tab="summary">📄 Summary</button>
+                    <button class="tab" data-tab="concepts">🔑 Key Concepts</button>
+                    <button class="tab" data-tab="simplified">✨ Simplified</button>
+                    <button class="tab" data-tab="audio">🎧 Audio Script</button>
+                    <button class="tab" data-tab="visual">🖼️ Visual Summary</button>
+                    <button class="tab" data-tab="frames">🎬 Frame Captions</button>
+                </div>
+
+                <div class="tab-content active" id="tab-summary"></div>
+                <div class="tab-content" id="tab-concepts"></div>
+                <div class="tab-content" id="tab-simplified"></div>
+                <div class="tab-content" id="tab-audio"></div>
+                <div class="tab-content" id="tab-visual"></div>
+                <div class="tab-content" id="tab-frames"></div>
+            </section>
+
+            <!-- Accessibility Modes -->
+            <section class="content-section" id="accessibilitySection">
+                <h2 class="section-header">♿ Student Accessibility Modes</h2>
+                <div class="info-box">
+                    Select a learning mode below to view the lesson adapted for different accessibility needs.
+                </div>
+                <div class="accessibility-mode-grid" id="accessibilityGrid"></div>
+                <div class="section-divider"></div>
+                <div id="adaptedContent"></div>
+            </section>
+
+            <!-- Quiz -->
+            <section class="content-section" id="quizSection">
+                <h2 class="section-header">📝 Quiz & Assessment</h2>
+                <div id="quizContainer"></div>
+                <div id="quizResults" style="display:none;"></div>
+                <div id="adaptiveFeedback" style="display:none;"></div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
